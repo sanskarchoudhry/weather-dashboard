@@ -32,21 +32,25 @@ export default function CurrentForecast() {
     : null;
 
   return (
-    <div>
-      <section>
-        <div>
+    <div className="w-full">
+      <section className="p-4 w-full flex flex-row items-start justify-between">
+        <div className="flex flex-col gap-8">
           <div>
-            <h1>{weatherData?.name}</h1>
-            <h4>Humidity: {weatherData?.main?.humidity || 0}%</h4>
+            <h1 className="text-[1.7rem] font-bold">{weatherData?.name}</h1>
+            <h4 className="text-stone-400">
+              Humidity: {weatherData?.main?.humidity || 0}%
+            </h4>
           </div>
-          <div>{weatherData?.main?.temp || "N/A"} °C</div>
+          <div className="text-[2.5rem] font-semibold">
+            {weatherData?.main?.temp || "N/A"} °C
+          </div>
         </div>
-        <div>
+        <div className=" flex items-center justify-center h-[150px]">
           {weatherIconUrl && (
             <img
               src={weatherIconUrl}
               alt={weatherData?.weather[0].description}
-              style={{ width: "100px" }}
+              className="object-contain h-full pl-8"
             />
           )}
         </div>
@@ -54,36 +58,26 @@ export default function CurrentForecast() {
       <section>
         <ForecastTable />
       </section>
-      <section>
-        <div>AIR CONDITIONS</div>
-        <section>
-          <div>
-            <div>
+      <section className="flex flex-col px-16 py-4 gap-4 bg-stone-100 w-full rounded-[20px]">
+        <div className="text-stone-400 font-semibold">AIR CONDITIONS</div>
+        <section className="grid grid-cols-2">
+          <div className="">
+            <div className="text-stone-400 flex flex-row gap-2">
               <img src="/icons/thermometer.svg" alt="thermometer-icon" />
               Real Feel{" "}
             </div>
-            <div>{weatherData?.main?.feels_like || "N/A"}</div>
+            <div className="text-[1.3rem] font-semibold">
+              {weatherData?.main?.feels_like || "N/A"} °C
+            </div>
           </div>
           <div>
-            <div>
+            <div className="text-stone-400 flex flex-row gap-2">
               <img src="/icons/wind.svg" alt="wind-icon" />
               Wind{" "}
             </div>
-            <div>{weatherData?.wind?.speed || 0} km/hr</div>
-          </div>
-          <div>
-            <div>
-              <img src="/icons/droplet.svg" alt="rain-icon" />
-              Chance of rain{" "}
+            <div className="text-[1.3rem] font-semibold">
+              {weatherData?.wind?.speed || 0} km/hr
             </div>
-            <div>0%</div>
-          </div>
-          <div>
-            <div>
-              <img src="/icons/sun-medium.svg" alt="sun-icon" />
-              UV index{" "}
-            </div>
-            <div>3</div>
           </div>
         </section>
       </section>

@@ -11,14 +11,20 @@ export default function CityInput() {
   };
 
   return (
-    <div>
+    <div className=" flex flex-row w-full ">
       <input
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Enter city name"
+        className=" bg-stone-100 p-2 rounded-[8px] rounded-r-[0px] outline-none w-[90%]"
       />
-      <button onClick={handleSearch}>Search</button>
+      <button
+        onClick={handleSearch}
+        className="cursor-pointer bg-stone-100  p-2 pr-4 rounded-[8px] rounded-l-[0px]"
+      >
+        <img src="/icons/search.svg" alt="search-icon" />
+      </button>
     </div>
   );
 }
