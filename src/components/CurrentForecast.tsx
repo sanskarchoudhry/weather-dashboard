@@ -25,15 +25,13 @@ export default function CurrentForecast() {
     getCityWeather();
   }, [isSearchTriggered, cityName]);
 
-  console.log(weatherData);
-
   const weatherIconUrl = weatherData?.weather?.[0]?.icon
     ? `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`
     : null;
 
   return (
     <div className="w-full">
-      <section className="p-4 w-full flex flex-row items-start justify-between">
+      <section className=" w-full flex flex-row items-start justify-between">
         <div className="flex flex-col gap-8">
           <div>
             <h1 className="text-[1.7rem] font-bold">{weatherData?.name}</h1>
@@ -58,7 +56,7 @@ export default function CurrentForecast() {
       <section>
         <ForecastTable />
       </section>
-      <section className="flex flex-col px-16 py-4 gap-4 bg-stone-100 w-full rounded-[20px]">
+      <section className="mt-4 flex flex-col px-16 py-4 gap-4 bg-stone-100 w-full rounded-[20px]">
         <div className="text-stone-400 font-semibold">AIR CONDITIONS</div>
         <section className="grid grid-cols-2">
           <div className="">

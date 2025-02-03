@@ -10,3 +10,29 @@ export interface WeatherData {
   };
   weather: [{ id: number; main: string; description: string; icon: string }];
 }
+
+export interface ForecastEntry {
+  dt: number;
+  dt_txt: string;
+  main: {
+    temp: number;
+    feels_like: number;
+    humidity: number;
+  };
+  wind: {
+    speed: number;
+  };
+  weather: [{ id: number; main: string; description: string; icon: string }];
+}
+
+export interface OpenWeatherResponse {
+  list: ForecastEntry[];
+}
+
+export interface DailyForecast {
+  date: string;
+  avgTemp: number;
+  avgHumidity: number;
+  weather: string;
+  icon: string;
+}
