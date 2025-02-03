@@ -1,18 +1,55 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ForecastTable from "./ForecastTable";
+import { HomePageContext } from "../HomePageContext";
+import { getWeatherData } from "../services";
+import { WeatherData } from "../services/types";
 
 export default function CurrentForecast() {
+  const { cityName, isSearchTriggered, setIsSearchTriggered } =
+    useContext(HomePageContext);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+
+  useEffect(() => {
+    const getCityWeather = async () => {
+      if (isSearchTriggered) {
+        try {
+          const response = await getWeatherData(cityName);
+          setWeatherData(response);
+        } catch (error) {
+          console.error("Error fetching weather data", error);
+        } finally {
+          setIsSearchTriggered(false);
+        }
+      }
+    };
+    getCityWeather();
+  }, [isSearchTriggered, cityName]);
+
+  console.log(weatherData);
+
+  const weatherIconUrl = weatherData?.weather?.[0]?.icon
+    ? `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`
+    : null;
+
   return (
     <div>
       <section>
         <div>
           <div>
-            <h1>Bengaluru</h1>
-            <h4>Humidity: 0%</h4>
+            <h1>{weatherData?.name}</h1>
+            <h4>Humidity: {weatherData?.main?.humidity || 0}%</h4>
           </div>
-          <div>26</div>
+          <div>{weatherData?.main?.temp || "N/A"} °C</div>
         </div>
-        <div>Image of weather</div>
+        <div>
+          {weatherIconUrl && (
+            <img
+              src={weatherIconUrl}
+              alt={weatherData?.weather[0].description}
+              style={{ width: "100px" }}
+            />
+          )}
+        </div>
       </section>
       <section>
         <ForecastTable />
@@ -22,28 +59,28 @@ export default function CurrentForecast() {
         <section>
           <div>
             <div>
-              <img src="/thermometer.svg" alt="thermometer-icon" />
+              <img src="/icons/thermometer.svg" alt="thermometer-icon" />
               Real Feel{" "}
             </div>
-            <div>30</div>
+            <div>{weatherData?.main?.feels_like || "N/A"}</div>
           </div>
           <div>
             <div>
-              <img src="/wind.svg" alt="wind-icon" />
+              <img src="/icons/wind.svg" alt="wind-icon" />
               Wind{" "}
             </div>
-            <div>0.2 km/hr</div>
+            <div>{weatherData?.wind?.speed || 0} km/hr</div>
           </div>
           <div>
             <div>
-              <img src="/droplet.svg" alt="rain-icon" />
+              <img src="/icons/droplet.svg" alt="rain-icon" />
               Chance of rain{" "}
             </div>
             <div>0%</div>
           </div>
           <div>
             <div>
-              <img src="/sun-medium.svg" alt="sun-icon" />
+              <img src="/icons/sun-medium.svg" alt="sun-icon" />
               UV index{" "}
             </div>
             <div>3</div>

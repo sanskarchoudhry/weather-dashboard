@@ -5,5 +5,5 @@ export const getWeatherData = async (cityName: string) => {
   const response = await axios.get(
     `${envConfig.openWeatherUrl}weather?q=${cityName}&appid=${envConfig.openWeatherAPIKey}`
   );
-  console.log(response);
+  return response.data;
 };
