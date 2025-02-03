@@ -5,18 +5,19 @@ import { formatDate, processFiveDayForecast } from "../utils/methods";
 import { DailyForecast } from "../services/types";
 
 export default function FutureForecast() {
-  const { cityName, isSearchTriggered } = useContext(HomePageContext);
+  const { cityName, isSearchTriggered, temperatureUnit } =
+    useContext(HomePageContext);
   const [forecastData, setForecastData] = useState<DailyForecast[]>([]);
 
   useEffect(() => {
     if (isSearchTriggered) {
       const getForecastData = async () => {
-        const response = await getFutureForecast(cityName);
+        const response = await getFutureForecast(cityName, temperatureUnit);
         if (response) setForecastData(processFiveDayForecast(response.data));
       };
       getForecastData();
     }
-  }, [isSearchTriggered, cityName]);
+  }, [isSearchTriggered, cityName, temperatureUnit]);
 
   return (
     <section className="bg-stone-100 rounded-lg p-6 ">
@@ -45,7 +46,8 @@ export default function FutureForecast() {
                   <span>{data.weather}</span>
                 </div>
                 <div className="w-1/4 text-stone-700 font-semibold">
-                  {data.avgTemp}°C
+                  {data.avgTemp.toFixed(1)}
+                  {temperatureUnit === "imperial" ? "°F" : "°C"}
                 </div>
               </div>
             );

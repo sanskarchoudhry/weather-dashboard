@@ -5,76 +5,96 @@ import { getWeatherData } from "../services";
 import { WeatherData } from "../services/types";
 
 export default function CurrentForecast() {
-  const { cityName, isSearchTriggered, setIsSearchTriggered } =
-    useContext(HomePageContext);
+  const { cityName, temperatureUnit } = useContext(HomePageContext);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
   useEffect(() => {
     const getCityWeather = async () => {
-      if (isSearchTriggered) {
+      if (cityName) {
         try {
-          const response = await getWeatherData(cityName);
+          const response = await getWeatherData(cityName, temperatureUnit);
           setWeatherData(response);
         } catch (error) {
           console.error("Error fetching weather data", error);
-        } finally {
-          setIsSearchTriggered(false);
         }
       }
     };
     getCityWeather();
-  }, [isSearchTriggered, cityName]);
+  }, [cityName, temperatureUnit]);
 
   const weatherIconUrl = weatherData?.weather?.[0]?.icon
     ? `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`
     : null;
 
   return (
-    <div className="w-full">
-      <section className=" w-full flex flex-row items-start justify-between">
-        <div className="flex flex-col gap-8">
+    <div className="w-full max-w-md md:max-w-lg lg:max-w-3xl p-4">
+      <section className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col gap-4 text-center md:text-left">
           <div>
-            <h1 className="text-[1.7rem] font-bold">{weatherData?.name}</h1>
-            <h4 className="text-stone-400">
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              {weatherData?.name}
+            </h1>
+            <h4 className="text-stone-400 text-lg">
               Humidity: {weatherData?.main?.humidity || 0}%
             </h4>
           </div>
-          <div className="text-[2.5rem] font-semibold">
-            {weatherData?.main?.temp || "N/A"} °C
+          <div className="text-4xl sm:text-5xl font-semibold">
+            {weatherData?.main?.temp !== undefined
+              ? `${weatherData.main.temp.toFixed(1)} ${
+                  temperatureUnit === "imperial" ? "°F" : "°C"
+                }`
+              : "N/A"}
           </div>
         </div>
-        <div className=" flex items-center justify-center h-[150px]">
-          {weatherIconUrl && (
+
+        {weatherIconUrl && (
+          <div className="flex items-center justify-center h-20 sm:h-32 md:h-40">
             <img
               src={weatherIconUrl}
               alt={weatherData?.weather[0].description}
               className="object-contain h-full pl-8"
             />
-          )}
-        </div>
+          </div>
+        )}
       </section>
-      <section>
+
+      <section className="mt-6">
         <ForecastTable />
       </section>
-      <section className="mt-4 flex flex-col px-16 py-4 gap-4 bg-stone-100 w-full rounded-[20px]">
-        <div className="text-stone-400 font-semibold">AIR CONDITIONS</div>
-        <section className="grid grid-cols-2">
-          <div className="">
-            <div className="text-stone-400 flex flex-row gap-2">
-              <img src="/icons/thermometer.svg" alt="thermometer-icon" />
-              Real Feel{" "}
+
+      <section className="mt-6 flex flex-col p-4 sm:p-6 gap-4 bg-stone-100 w-full rounded-xl shadow-md">
+        <div className="text-stone-400 font-semibold text-lg">
+          AIR CONDITIONS
+        </div>
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="flex flex-col items-center sm:items-start">
+            <div className="text-stone-400 flex items-center gap-2">
+              <img
+                src="/icons/thermometer.svg"
+                alt="thermometer-icon"
+                className="w-5 h-5"
+              />
+              <span>Real Feel</span>
             </div>
-            <div className="text-[1.3rem] font-semibold">
-              {weatherData?.main?.feels_like || "N/A"} °C
+            <div className="text-2xl font-semibold">
+              {weatherData?.main?.feels_like !== undefined
+                ? `${weatherData.main.temp.toFixed(1)} ${
+                    temperatureUnit === "imperial" ? "°F" : "°C"
+                  }`
+                : "N/A"}
             </div>
           </div>
-          <div>
-            <div className="text-stone-400 flex flex-row gap-2">
-              <img src="/icons/wind.svg" alt="wind-icon" />
-              Wind{" "}
+
+          <div className="flex flex-col items-center sm:items-start">
+            <div className="text-stone-400 flex items-center gap-2">
+              <img src="/icons/wind.svg" alt="wind-icon" className="w-5 h-5" />
+              <span>Wind</span>
             </div>
             <div className="text-[1.3rem] font-semibold">
-              {weatherData?.wind?.speed || 0} km/hr
+              {temperatureUnit === "imperial"
+                ? ((weatherData?.wind?.speed ?? 0) * 2.237).toFixed(1)
+                : (weatherData?.wind?.speed ?? 0).toFixed(1)}{" "}
+              {temperatureUnit === "imperial" ? "mph" : "m/s"}
             </div>
           </div>
         </section>
