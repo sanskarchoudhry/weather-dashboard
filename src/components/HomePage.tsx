@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CityInput from "./CityInput";
 import WeatherDashboard from "./WeatherDashboard";
 import { HomePageContext } from "../HomePageContext";
@@ -6,11 +6,24 @@ import FutureForecast from "./FutureForecast";
 import TemperatureToggle from "./TemperatureToggle";
 
 export default function HomePage() {
-  const [cityName, setCityName] = useState<string>("");
+  const [cityName, setCityName] = useState<string>(
+    localStorage.getItem("lastCity") || ""
+  );
   const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false);
   const [temperatureUnit, setTemperatureUnit] = useState<"metric" | "imperial">(
     "metric"
   );
+
+  useEffect(() => {
+    if (cityName) {
+      localStorage.setItem("lastCity", cityName);
+    }
+  }, [cityName]);
+  useEffect(() => {
+    if (cityName) {
+      setIsSearchTriggered(true);
+    }
+  }, []);
 
   const toggleTemperatureUnit = () => {
     setTemperatureUnit((prevUnit) =>
@@ -32,7 +45,7 @@ export default function HomePage() {
       >
         <section className="w-full sm:w-3/4 md:w-2/3 flex flex-col items-start p-4 justify-center">
           <CityInput />
-          <TemperatureToggle />
+          {cityName && <TemperatureToggle />}
           {cityName && <WeatherDashboard />}
         </section>
 
