@@ -8,7 +8,7 @@ export default function HomePage() {
   const [isSearchTriggered, setIsSearchTriggered] = useState<boolean>(false);
 
   return (
-    <div>
+    <div className="">
       <HomePageContext.Provider
         value={{
           cityName,
