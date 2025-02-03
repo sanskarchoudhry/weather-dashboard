@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { HomePageContext } from "../../HomePageContext";
 import { getFutureForecast } from "../../services";
 import { formatDate, processFiveDayForecast } from "../../utils/methods";

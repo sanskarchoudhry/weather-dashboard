@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CityInput from "./CityInput";
 import WeatherDashboard from "./WeatherDashboard";
 import { HomePageContext } from "../HomePageContext";
@@ -23,6 +23,7 @@ export default function HomePage() {
     if (cityName) {
       setIsSearchTriggered(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleTemperatureUnit = () => {

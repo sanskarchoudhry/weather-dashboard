@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { HomePageContext } from "../HomePageContext";
 
 export default function TemperatureToggle() {

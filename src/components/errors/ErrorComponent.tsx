@@ -1,4 +1,3 @@
-import React from "react";
 import { ErrorComponentProps } from "../../services/types";
 
 export default function ErrorComponent({ message }: ErrorComponentProps) {
