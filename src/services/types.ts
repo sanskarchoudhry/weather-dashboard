@@ -36,3 +36,7 @@ export interface DailyForecast {
   weather: string;
   icon: string;
 }
+
+export interface ErrorComponentProps {
+  message: string;
+}

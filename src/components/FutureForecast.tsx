@@ -3,24 +3,42 @@ import { HomePageContext } from "../HomePageContext";
 import { getFutureForecast } from "../services";
 import { formatDate, processFiveDayForecast } from "../utils/methods";
 import { DailyForecast } from "../services/types";
+import ErrorComponent from "./errors/ErrorComponent";
+import { AxiosError } from "axios";
 
 export default function FutureForecast() {
   const { cityName, isSearchTriggered, temperatureUnit } =
     useContext(HomePageContext);
   const [forecastData, setForecastData] = useState<DailyForecast[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isSearchTriggered) {
       const getForecastData = async () => {
-        const response = await getFutureForecast(cityName, temperatureUnit);
-        if (response) setForecastData(processFiveDayForecast(response.data));
+        try {
+          const response = await getFutureForecast(cityName, temperatureUnit);
+          if (response) {
+            setForecastData(processFiveDayForecast(response.data));
+            setError(null);
+          }
+        } catch (err: unknown) {
+          console.error("Error fetching future forecast:", err);
+
+          if (err instanceof AxiosError) {
+            setError(err.response?.data.message);
+          } else {
+            setError("An unexpected error occurred.");
+          }
+        }
       };
       getForecastData();
     }
   }, [isSearchTriggered, cityName, temperatureUnit]);
 
+  if (error) return <ErrorComponent message={error} />;
+
   return (
-    <section className="bg-stone-100 rounded-lg p-6 ">
+    <section className="bg-stone-100 rounded-lg p-6">
       <h3 className="text-stone-500 font-semibold text-lg mb-4 uppercase">
         5-day Forecast
       </h3>

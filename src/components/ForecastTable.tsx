@@ -3,21 +3,39 @@ import { HomePageContext } from "../HomePageContext";
 import { getFutureForecast } from "../services";
 import { getCurrentDayForecast } from "../utils/methods";
 import { ForecastEntry } from "../services/types";
+import ErrorComponent from "./errors/ErrorComponent";
+import { AxiosError } from "axios";
 
 export default function ForecastTable() {
   const { cityName, isSearchTriggered, temperatureUnit } =
     useContext(HomePageContext);
   const [todayForecast, setTodayForecast] = useState<ForecastEntry[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isSearchTriggered) {
       const fetchForecastData = async () => {
-        const response = await getFutureForecast(cityName, temperatureUnit);
-        if (response) setTodayForecast(getCurrentDayForecast(response.data));
+        try {
+          const response = await getFutureForecast(cityName, temperatureUnit);
+          if (response) {
+            setTodayForecast(getCurrentDayForecast(response.data));
+            setError(null);
+          }
+        } catch (err: unknown) {
+          console.error("Error fetching forecast data:", err);
+
+          if (err instanceof AxiosError) {
+            setError(err.response?.data.message);
+          } else {
+            setError("An unexpected error occurred.");
+          }
+        }
       };
       fetchForecastData();
     }
   }, [isSearchTriggered, cityName, temperatureUnit]);
+
+  if (error) return <ErrorComponent message={error} />;
 
   return (
     <section className="bg-stone-100 rounded-lg p-6">

@@ -3,10 +3,13 @@ import ForecastTable from "./ForecastTable";
 import { HomePageContext } from "../HomePageContext";
 import { getWeatherData } from "../services";
 import { WeatherData } from "../services/types";
+import ErrorComponent from "./errors/ErrorComponent";
+import { AxiosError } from "axios";
 
 export default function CurrentForecast() {
   const { cityName, temperatureUnit } = useContext(HomePageContext);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const getCityWeather = async () => {
@@ -14,13 +17,25 @@ export default function CurrentForecast() {
         try {
           const response = await getWeatherData(cityName, temperatureUnit);
           setWeatherData(response);
-        } catch (error) {
-          console.error("Error fetching weather data", error);
+          setError(null);
+        } catch (err: unknown) {
+          console.error("Error fetching weather data:", err);
+
+          if (err instanceof AxiosError) {
+            setError(err.response?.data.message);
+          } else {
+            setError(
+              "An unexpected error occurred while fetching weather data."
+            );
+          }
         }
       }
     };
+
     getCityWeather();
   }, [cityName, temperatureUnit]);
+
+  if (error) return <ErrorComponent message={error} />;
 
   const weatherIconUrl = weatherData?.weather?.[0]?.icon
     ? `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`
@@ -32,10 +47,10 @@ export default function CurrentForecast() {
         <div className="flex flex-col gap-4 text-center md:text-left">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">
-              {weatherData?.name}
+              {weatherData?.name ?? "Unknown City"}
             </h1>
             <h4 className="text-stone-400 text-lg">
-              Humidity: {weatherData?.main?.humidity || 0}%
+              Humidity: {weatherData?.main?.humidity ?? 0}%
             </h4>
           </div>
           <div className="text-4xl sm:text-5xl font-semibold">
@@ -51,7 +66,7 @@ export default function CurrentForecast() {
           <div className="flex items-center justify-center h-20 sm:h-32 md:h-40">
             <img
               src={weatherIconUrl}
-              alt={weatherData?.weather[0].description}
+              alt={weatherData?.weather?.[0]?.description ?? "Weather icon"}
               className="object-contain h-full pl-8"
             />
           </div>
@@ -78,7 +93,7 @@ export default function CurrentForecast() {
             </div>
             <div className="text-2xl font-semibold">
               {weatherData?.main?.feels_like !== undefined
-                ? `${weatherData.main.temp.toFixed(1)} ${
+                ? `${weatherData.main.feels_like.toFixed(1)} ${
                     temperatureUnit === "imperial" ? "°F" : "°C"
                   }`
                 : "N/A"}
@@ -91,10 +106,13 @@ export default function CurrentForecast() {
               <span>Wind</span>
             </div>
             <div className="text-[1.3rem] font-semibold">
-              {temperatureUnit === "imperial"
-                ? ((weatherData?.wind?.speed ?? 0) * 2.237).toFixed(1)
-                : (weatherData?.wind?.speed ?? 0).toFixed(1)}{" "}
-              {temperatureUnit === "imperial" ? "mph" : "m/s"}
+              {weatherData?.wind?.speed !== undefined
+                ? `${
+                    temperatureUnit === "imperial"
+                      ? (weatherData.wind.speed * 2.237).toFixed(1)
+                      : weatherData.wind.speed.toFixed(1)
+                  } ${temperatureUnit === "imperial" ? "mph" : "m/s"}`
+                : "N/A"}
             </div>
           </div>
         </section>
