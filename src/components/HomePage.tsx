@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CityInput from "./CityInput";
+import WeatherDashboard from "./WeatherDashboard";
 
 export default function HomePage() {
   const [cityName, setCityName] = useState<string>("");
@@ -12,7 +13,7 @@ export default function HomePage() {
   return (
     <div>
       <CityInput cityName={cityName} onCityNameChange={handleCityNameChange} />
-      <p>Selected City: {cityName}</p>
+      <WeatherDashboard />
     </div>
   );
 }
