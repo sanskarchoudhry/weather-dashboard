@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
-import { HomePageContext } from "../HomePageContext";
-import { getFutureForecast } from "../services";
-import { formatDate, processFiveDayForecast } from "../utils/methods";
-import { DailyForecast } from "../services/types";
-import ErrorComponent from "./errors/ErrorComponent";
+import { HomePageContext } from "../../HomePageContext";
+import { getFutureForecast } from "../../services";
+import { formatDate, processFiveDayForecast } from "../../utils/methods";
+import { DailyForecast } from "../../services/types";
+import ErrorComponent from "../errors/ErrorComponent";
 import { AxiosError } from "axios";
 
 export default function FutureForecast() {

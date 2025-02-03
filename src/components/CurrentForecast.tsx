@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import ForecastTable from "./ForecastTable";
+import ForecastTable from "./tables/ForecastTable";
 import { HomePageContext } from "../HomePageContext";
 import { getWeatherData } from "../services";
 import { WeatherData } from "../services/types";

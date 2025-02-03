@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CityInput from "./CityInput";
 import WeatherDashboard from "./WeatherDashboard";
 import { HomePageContext } from "../HomePageContext";
-import FutureForecast from "./FutureForecast";
+import FutureForecast from "./tables/FutureForecast";
 import TemperatureToggle from "./TemperatureToggle";
 
 export default function HomePage() {
